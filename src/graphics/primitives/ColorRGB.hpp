@@ -31,9 +31,9 @@ struct ColorRGB {
 
     static unsigned const BIT_WIDTH = 24;
     static uint32_t const PIXEL_FORMAT = SDL_PIXELFORMAT_RGB24;
-    static uint32_t const RED_MASK = 0xFF << 16;
+    static uint32_t const RED_MASK = 0xFF;
     static uint32_t const GREEN_MASK = 0xFF << 8;
-    static uint32_t const BLUE_MASK = 0xFF;
+    static uint32_t const BLUE_MASK = 0xFF << 16;
 
     uint8_t red;
     uint8_t green;

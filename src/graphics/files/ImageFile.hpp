@@ -26,14 +26,11 @@ namespace graphics {
 
 class ImageFile {
     std::string file_path_;
-    std::unique_ptr<RGBSurface> surface_;
+    std::shared_ptr<RGBSurface> surface_;
 
 public:
     ImageFile(std::string file_path);
     ~ImageFile();
-
-    ImageFile(ImageFile const & other) = delete;
-    ImageFile & operator=(ImageFile const &) = delete;
 
     RGBSurface & surface();
     RGBSurface const & surface() const;

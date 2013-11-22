@@ -82,7 +82,7 @@ void RGBSurface::set_pixel(unsigned x, unsigned y, ColorRGB color) {
     auto start_of_row = reinterpret_cast<uint8_t *>(surface_->pixels) +
         surface_->pitch * y;
     auto target = reinterpret_cast<uint32_t *>(start_of_row +
-        x * ColorRGB::BIT_WIDTH);
+        x * (ColorRGB::BIT_WIDTH / 8));
     *target = color.value() | (*target & 0x000000FF);
 }
 
@@ -96,7 +96,7 @@ ColorRGB RGBSurface::get_pixel(unsigned x, unsigned y) const {
     auto start_of_row = reinterpret_cast<uint8_t *>(surface_->pixels) +
         surface_->pitch * y;
     auto target = reinterpret_cast<uint32_t *>(start_of_row +
-        x * ColorRGB::BIT_WIDTH);
+        x * (ColorRGB::BIT_WIDTH / 8));
     return ColorRGB(*target & 0xFFFFFF00);
 }
 
