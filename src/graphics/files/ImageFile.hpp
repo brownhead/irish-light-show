@@ -20,16 +20,20 @@
 #include "graphics/primitives/RGBSurface.hpp"
 
 #include <string>
+#include <memory>
 
 namespace graphics {
 
 class ImageFile {
     std::string file_path_;
-    RGBSurface surface_;
+    std::unique_ptr<RGBSurface> surface_;
 
 public:
     ImageFile(std::string file_path);
     ~ImageFile();
+
+    ImageFile(ImageFile const & other) = delete;
+    ImageFile & operator=(ImageFile const &) = delete;
 
     RGBSurface & surface();
     RGBSurface const & surface() const;

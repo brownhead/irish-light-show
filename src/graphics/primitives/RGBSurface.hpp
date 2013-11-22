@@ -32,8 +32,11 @@ class RGBSurface {
 public:
     RGBSurface();
     RGBSurface(unsigned width, unsigned height);
-    RGBSurface(SDL_Surface * surface, bool convert = true);
-    RGBSurface(RGBSurface & other);
+    explicit RGBSurface(SDL_Surface * surface, bool convert = true);
+
+    RGBSurface(RGBSurface const & other) = delete;
+    RGBSurface & operator=(RGBSurface const &) = delete;
+
     ~RGBSurface();
     void set_pixel(unsigned x, unsigned y, ColorRGB color);
     ColorRGB get_pixel(unsigned x, unsigned y) const;

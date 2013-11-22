@@ -44,7 +44,12 @@ RGBSurface::RGBSurface(unsigned width, unsigned height) :
     }
 }
 
-RGBSurface::RGBSurface(SDL_Surface * surface, bool convert) {
+RGBSurface::RGBSurface(SDL_Surface * surface, bool convert) :
+        width_(0), height_(0) {
+    if (surface == nullptr) {
+        throw std::invalid_argument("surface cannot be null");
+    }
+
     if (convert) {
         SDL_Surface * converted_surface = SDL_ConvertSurfaceFormat(surface,
             ColorRGB::PIXEL_FORMAT, 0);
@@ -53,20 +58,12 @@ RGBSurface::RGBSurface(SDL_Surface * surface, bool convert) {
         }
         surface_ = converted_surface;
     } else {
+        std::cerr << "asdfkwk2k" << std::endl;
         surface_ = surface;
     }
-}
 
-RGBSurface::RGBSurface(RGBSurface & other) {
-    std::cerr << "hello bobby" << std::endl;
-
-    surface_ = other.surface_;
-    width_ = other.width_;
-    height_ = other.height_;
-
-    other.surface_ = nullptr;
-    other.width_ = 0;
-    other.height_ = 0;
+    width_ = surface_->w;
+    height_ = surface_->h;
 }
 
 RGBSurface::~RGBSurface() {

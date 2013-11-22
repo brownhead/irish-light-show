@@ -23,12 +23,23 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
 typedef uint32_t color_t;
 
 int main(int argc, char * argv[]) {
     if (argc == 1) {
         std::cout << "usage: " << argv[0] << " image0 image1 ..." << std::endl;
+        return 1;
+    }
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        std::cerr << "Failed to initialize SDL_video." << std::endl;
+        return 1;
+    }
+
+    if (IMG_Init(0) != 0) {
+        std::cerr << "Failed to initialize SDL_image." << std::endl;
         return 1;
     }
 
@@ -40,22 +51,21 @@ int main(int argc, char * argv[]) {
        return 1;
     }
 
-    graphics::ImageFile a(argv[1]);
 
     // graphics::RGBSurface surface(100, 100);
     // surface.set_pixel(40, 5, graphics::ColorRGB(0, 0, 255));
 
     SDL_Surface * screen = SDL_GetWindowSurface(win);
 
-    // SDL_Rect r = {0, 0, 20, 20};
+    graphics::ImageFile a(argv[1]);
+
     SDL_BlitSurface(a.surface().sdl_surface(), NULL, screen, NULL);
 
-    SDL_UpdateWindowSurface(win);
 
     SDL_Delay(2000);
 
-    // SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
+
 
     IMG_Quit();
     SDL_Quit();

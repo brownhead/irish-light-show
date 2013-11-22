@@ -31,17 +31,14 @@ ImageFile::ImageFile(std::string file_path) : file_path_(file_path) {
         throw common::SDLException("Failed to open file at " + file_path_);
     }
 
-    SDL_Surface * raw_surface = IMG_Load_RW(image_file, true);
+    auto free_surface = [](SDL_Surface * x) { SDL_FreeSurface(x); };
+    std::unique_ptr<SDL_Surface, decltype(free_surface)> raw_surface(
+        IMG_Load_RW(image_file, true), free_surface);
     if (raw_surface == nullptr) {
         throw common::IMGException("Failed to parse file at " + file_path_);
     }
 
-    try {
-        surface_ = RGBSurface(raw_surface);
-    } catch (...) {
-        SDL_FreeSurface(raw_surface);
-        throw;
-    }
+    surface_.reset(new RGBSurface(raw_surface.get()));
 }
 
 ImageFile::~ImageFile() {
@@ -49,11 +46,11 @@ ImageFile::~ImageFile() {
 }
 
 RGBSurface & ImageFile::surface() {
-    return surface_;
+    return *surface_;
 }
 
 RGBSurface const & ImageFile::surface() const {
-    return surface_;
+    return *surface_;
 }
 
 } // namespace graphics
