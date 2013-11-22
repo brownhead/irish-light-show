@@ -58,7 +58,6 @@ RGBSurface::RGBSurface(SDL_Surface * surface, bool convert) :
         }
         surface_ = converted_surface;
     } else {
-        std::cerr << "asdfkwk2k" << std::endl;
         surface_ = surface;
     }
 

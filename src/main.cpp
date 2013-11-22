@@ -17,6 +17,7 @@
 
 #include "graphics/primitives/RGBSurface.hpp"
 #include "graphics/files/ImageFile.hpp"
+#include "common/SDLException.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -53,13 +54,17 @@ int main(int argc, char * argv[]) {
 
 
     // graphics::RGBSurface surface(100, 100);
-    // surface.set_pixel(40, 5, graphics::ColorRGB(0, 0, 255));
+    // surface.set_pixel(40, 5, graphics::ColorRGB(255, 255, 255));
 
     SDL_Surface * screen = SDL_GetWindowSurface(win);
 
     graphics::ImageFile a(argv[1]);
 
-    SDL_BlitSurface(a.surface().sdl_surface(), NULL, screen, NULL);
+    if (SDL_BlitSurface(a.surface().sdl_surface(), NULL, screen, NULL) != 0) {
+        throw common::SDLException("could not blit");
+    }
+
+    SDL_UpdateWindowSurface(win);
 
 
     SDL_Delay(2000);
