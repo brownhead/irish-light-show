@@ -96,13 +96,6 @@ int main(int argc, char * argv[]) {
     // Create an off-screen buffer we'll draw to
     graphics::RGBSurface buffer(max_width, max_height);
 
-    // Blend the images from left to right
-    light_blend_surfaces(files.at(0).surface(), files.at(1).surface(), buffer,
-        255);
-    for (size_t i = 2; i < files.size(); ++i) {
-        light_blend_surfaces(buffer, files.at(i).surface(), buffer, 255);
-    }
-
     // Get a window up
     SDL_Window * win = SDL_CreateWindow(
         "Irish Light Show", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -113,13 +106,63 @@ int main(int argc, char * argv[]) {
     }
     SDL_Surface * screen = SDL_GetWindowSurface(win);
 
-    SDL_BlitSurface(buffer.sdl_surface(), nullptr, screen, nullptr);
-    SDL_UpdateWindowSurface(win);
+    unsigned const LIGHTNESS_CAP_MAX = 255;
+    unsigned const LIGHTNESS_CAP_MIN = 0;
+    unsigned const LIGHTNESS_CAP_BIG_STEP = 30;
+    unsigned lightness_cap = LIGHTNESS_CAP_MAX;
 
-    SDL_Delay(2000);
+    bool refresh_screen = false;
+    SDL_Event event;
+    while (SDL_WaitEvent(&event) == 1)
+    {
+        switch(event.type)
+        {
+            case SDL_KEYDOWN:
+                refresh_screen = true;
+                if (event.key.keysym.sym == SDLK_UP &&
+                        lightness_cap < LIGHTNESS_CAP_MAX) {
+                    ++lightness_cap;
+                } else if (event.key.keysym.sym == SDLK_DOWN &&
+                        lightness_cap > LIGHTNESS_CAP_MIN) {
+                    --lightness_cap;
+                } else if (event.key.keysym.sym == SDLK_PAGEUP) {
+                    lightness_cap = std::min(
+                        lightness_cap + LIGHTNESS_CAP_BIG_STEP,
+                        LIGHTNESS_CAP_MAX);
+                } else if (event.key.keysym.sym == SDLK_PAGEDOWN) {
+                    if (LIGHTNESS_CAP_MIN + LIGHTNESS_CAP_BIG_STEP >
+                            lightness_cap) {
+                        lightness_cap = 0;
+                    } else {
+                        lightness_cap -= LIGHTNESS_CAP_BIG_STEP;
+                    }
+                } else {
+                    refresh_screen = false;
+                }
+                break;
 
-    SDL_DestroyWindow(win);
+            case SDL_QUIT:
+                goto cleanup;
+                break;
+        }
 
+        if (refresh_screen) {
+            std::cout << "cap: " << lightness_cap << std::endl;
+            // Blend the images from left to right
+            light_blend_surfaces(files.at(0).surface(), files.at(1).surface(),
+                buffer, lightness_cap);
+            for (size_t i = 2; i < files.size(); ++i) {
+                light_blend_surfaces(buffer, files.at(i).surface(), buffer,
+                    lightness_cap);
+            }
+
+            SDL_BlitSurface(buffer.sdl_surface(), nullptr, screen, nullptr);
+            SDL_UpdateWindowSurface(win);
+
+            refresh_screen = false;
+        }
+    }
+cleanup:
 
     IMG_Quit();
     SDL_Quit();
