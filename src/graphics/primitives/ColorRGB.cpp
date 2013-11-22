@@ -15,17 +15,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "ColorRGB.hpp"
 
-#include <stdexcept>
-#include <string>
+namespace graphics {
 
-namespace common {
+ColorRGB::ColorRGB(uint32_t value) : red(value >> 24),
+        green(value >> 16 & 0xFF), blue(value >> 8 & 0xFF) {
+    // Do nothing
+}
 
-class SDLException : public virtual std::runtime_error {
-public:
-	SDLException();
-	SDLException(std::string const what);
-};
+ColorRGB::ColorRGB(uint8_t red, uint8_t green, uint8_t blue) :
+        red(red), green(green), blue(blue) {
+    // Do nothing
+}
 
-} // namespace common
+uint32_t ColorRGB::value() const {
+    return red << 24 | green << 16 | blue << 8;
+}
+
+} // namespace graphics

@@ -15,30 +15,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "graphics/primitives/RGBASurface.hpp"
+#include "graphics/primitives/RGBSurface.hpp"
+#include "graphics/files/ImageFile.hpp"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <vector>
 
 typedef uint32_t color_t;
 
-int main() {
+int main(int argc, char * argv[]) {
+    if (argc == 1) {
+        std::cout << "usage: " << argv[0] << " image0 image1 ..." << std::endl;
+        return 1;
+    }
+
     SDL_Window * win = SDL_CreateWindow(
         "Irish Light Show", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        100, 100, SDL_WINDOW_SHOWN);
+        500, 500, SDL_WINDOW_SHOWN);
     if (win == nullptr){
        std::cerr << "Failed to create window. " << SDL_GetError() << std::endl;
        return 1;
     }
 
-    graphics::RGBASurface surface(100, 100);
-    surface.set_pixel(40, 5, graphics::ColorRGBA(0, 0, 255, 255));
+    graphics::ImageFile a(argv[1]);
+
+    // graphics::RGBSurface surface(100, 100);
+    // surface.set_pixel(40, 5, graphics::ColorRGB(0, 0, 255));
 
     SDL_Surface * screen = SDL_GetWindowSurface(win);
 
     // SDL_Rect r = {0, 0, 20, 20};
-    SDL_BlitSurface(surface.surface(), NULL, screen, NULL);
+    SDL_BlitSurface(a.surface().sdl_surface(), NULL, screen, NULL);
 
     SDL_UpdateWindowSurface(win);
 
@@ -47,6 +57,7 @@ int main() {
     // SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
 
+    IMG_Quit();
     SDL_Quit();
 
     return 0;

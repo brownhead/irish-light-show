@@ -17,15 +17,27 @@
 
 #pragma once
 
-#include <stdexcept>
-#include <string>
+#include <SDL2/SDL.h>
 
-namespace common {
+#include <stdint.h>
 
-class SDLException : public virtual std::runtime_error {
-public:
-	SDLException();
-	SDLException(std::string const what);
+namespace graphics {
+
+struct ColorRGB {
+    ColorRGB() = default;
+    ColorRGB(uint32_t value);
+    ColorRGB(uint8_t red, uint8_t green, uint8_t blue);
+    uint32_t value() const;
+
+    static unsigned const BIT_WIDTH = 24;
+    static uint32_t const PIXEL_FORMAT = SDL_PIXELFORMAT_RGB24;
+    static uint32_t const RED_MASK = 0xFF << 16;
+    static uint32_t const GREEN_MASK = 0xFF << 8;
+    static uint32_t const BLUE_MASK = 0xFF;
+
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
 };
 
-} // namespace common
+} // namespace graphics

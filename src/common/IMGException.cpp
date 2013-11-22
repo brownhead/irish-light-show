@@ -15,23 +15,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ColorRGBA.hpp"
+#include "IMGException.hpp"
 
-namespace graphics {
+#include <SDL2/SDL.h>
 
-ColorRGBA::ColorRGBA(uint32_t value) : red(value >> 24),
-		green(value >> 16 & 0xFF), blue(value >> 8 & 0xFF),
-		alpha(value & 0xFF) {
-	// Do nothing
+namespace common {
+
+IMGException::IMGException() : std::runtime_error(SDL_GetError()) {
+    // Do nothing
 }
 
-ColorRGBA::ColorRGBA(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
-		red(red), green(green), blue(blue), alpha(alpha) {
-	// Do nothing
+IMGException::IMGException(std::string const what) : std::runtime_error(what) {
+    // Do nothing
 }
 
-uint32_t ColorRGBA::value() const {
-	return red << 24 | green << 16 | blue << 8 | alpha;
-}
-
-} // namespace graphics
+} // namespace common

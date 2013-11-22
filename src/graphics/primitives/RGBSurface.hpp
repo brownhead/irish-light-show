@@ -17,15 +17,29 @@
 
 #pragma once
 
-#include <stdexcept>
-#include <string>
+#include "graphics/primitives/ColorRGB.hpp"
 
-namespace common {
+#include <SDL2/SDL.h>
 
-class SDLException : public virtual std::runtime_error {
+class SDL_Surface;
+
+namespace graphics {
+
+class RGBSurface {
+    SDL_Surface * surface_;
+    unsigned width_;
+    unsigned height_;
 public:
-	SDLException();
-	SDLException(std::string const what);
+    RGBSurface();
+    RGBSurface(unsigned width, unsigned height);
+    RGBSurface(SDL_Surface * surface, bool convert = true);
+    RGBSurface(RGBSurface & other);
+    ~RGBSurface();
+    void set_pixel(unsigned x, unsigned y, ColorRGB color);
+    ColorRGB get_pixel(unsigned x, unsigned y) const;
+    SDL_Surface * sdl_surface();
+    unsigned width() const;
+    unsigned height() const;
 };
 
-} // namespace common
+} // namespace graphics

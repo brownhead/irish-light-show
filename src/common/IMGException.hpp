@@ -22,10 +22,10 @@
 
 namespace common {
 
-class SDLException : public virtual std::runtime_error {
+class IMGException : public virtual std::runtime_error {
 public:
-	SDLException();
-	SDLException(std::string const what);
+    IMGException();
+    IMGException(std::string const what);
 };
 
 } // namespace common
